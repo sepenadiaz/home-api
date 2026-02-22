@@ -63,7 +63,7 @@ namespace Home.Api.Services
             return savedPurchase;
         }
 
-        public async Task<IEnumerable<PurchaseDTO>> Get(
+        public async Task<PagedResult<PurchaseDTO>> Get(
             PurchaseFilter filter,
             CancellationToken cancellationToken
         )

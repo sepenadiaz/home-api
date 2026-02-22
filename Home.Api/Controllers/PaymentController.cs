@@ -17,19 +17,19 @@ namespace Home.Api.Controllers
         }
 
         [HttpGet("GetSummary")]
-        [ProducesResponseType(typeof(IEnumerable<PaymentSummaryDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResult<PaymentSummaryDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IEnumerable<PaymentSummaryDTO>> GetSummary([FromQuery] PaymentSummaryFilter filter, CancellationToken cancellationToken)
+        public async Task<PagedResult<PaymentSummaryDTO>> GetSummary([FromQuery] PaymentSummaryFilter filter, CancellationToken cancellationToken)
         {
             return await service.GetSummary(filter, cancellationToken);
         }
 
         [HttpGet("GetDetails")]
-        [ProducesResponseType(typeof(IEnumerable<PaymentDetailDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResult<PaymentDetailDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IEnumerable<PaymentDetailDTO>> GetDetails([FromQuery] PaymentDetailFilter filter, CancellationToken cancellationToken)
+        public async Task<PagedResult<PaymentDetailDTO>> GetDetails([FromQuery] PaymentDetailFilter filter, CancellationToken cancellationToken)
         {
             return await service.GetDetails(filter, cancellationToken);
         }

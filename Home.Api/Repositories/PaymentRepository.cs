@@ -77,12 +77,12 @@ namespace Home.Api.Repositories
             return query;
         }
 
-        public async Task<IEnumerable<PaymentDetailDTO>> GetDetails(
+        public async Task<PagedResult<PaymentDetailDTO>> GetDetails(
             PaymentDetailFilter filter,
             CancellationToken cancellationToken
         )
         {
-            return await GetQueryableByFilter(
+            var baseQuery = GetQueryableByFilter(
                     new PaymentSummaryFilter
                     {
                         Year = filter.Year,
@@ -91,8 +91,13 @@ namespace Home.Api.Repositories
                         EndDate = filter.EndDate,
                     },
                     cancellationToken
-                )
-                .GroupBy(p => new { p.Year, p.Month })
+                );
+
+            var groups = baseQuery.GroupBy(p => new { p.Year, p.Month });
+
+            var total = await groups.CountAsync(cancellationToken);
+
+            var projected = groups
                 .Select(q => new PaymentDetailDTO
                 {
                     Year = q.Key.Year,
@@ -107,17 +112,34 @@ namespace Home.Api.Repositories
                             Total = s.Sum(t => t.Amount),
                         }),
                     Total = q.Sum(r => r.Amount),
-                })
-                .ToListAsync(cancellationToken);
+                });
+
+            if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
+            {
+                var skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
+                projected = projected.Skip(skip).Take(filter.PageSize.Value);
+            }
+
+            var items = await projected.ToListAsync(cancellationToken);
+
+            return new PagedResult<PaymentDetailDTO>
+            {
+                Items = items,
+                TotalRecords = total
+            };
         }
 
-        public async Task<IEnumerable<PaymentSummaryDTO>> GetSummary(
+        public async Task<PagedResult<PaymentSummaryDTO>> GetSummary(
             PaymentSummaryFilter filter,
             CancellationToken cancellationToken
         )
         {
-            return await GetQueryableByFilter(filter, cancellationToken)
-                .GroupBy(p => new { p.Year, p.Month })
+            var groups = GetQueryableByFilter(filter, cancellationToken)
+                .GroupBy(p => new { p.Year, p.Month });
+
+            var total = await groups.CountAsync(cancellationToken);
+
+            var projected = groups
                 .Select(g => new PaymentSummaryDTO
                 {
                     Year = g.Key.Year,
@@ -133,8 +155,21 @@ namespace Home.Api.Repositories
                         })
                         .OrderBy(cg => cg.CreditCardId)
                         .ToList(),
-                })
-                .ToListAsync(cancellationToken);
+                });
+
+            if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
+            {
+                var skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
+                projected = projected.Skip(skip).Take(filter.PageSize.Value);
+            }
+
+            var items = await projected.ToListAsync(cancellationToken);
+
+            return new PagedResult<PaymentSummaryDTO>
+            {
+                Items = items,
+                TotalRecords = total
+            };
         }
     }
 }

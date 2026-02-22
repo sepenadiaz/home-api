@@ -19,14 +19,32 @@ namespace Home.Api.Repositories
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<PurchaseDTO>> GetByFilter(
+        public async Task<PagedResult<PurchaseDTO>> GetByFilter(
             PurchaseFilter filter,
             CancellationToken cancellationToken
         )
         {
-            return await GetQueryableByFilter(filter, cancellationToken)
+            var query = GetQueryableByFilter(filter, cancellationToken);
+
+            // Get total count before pagination
+            var total = await query.CountAsync(cancellationToken);
+
+            // Apply paging if requested
+            if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
+            {
+                var skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
+                query = query.Skip(skip).Take(filter.PageSize.Value);
+            }
+
+            var items = await query
                 .ProjectTo<PurchaseDTO>(mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
+
+            return new PagedResult<PurchaseDTO>
+            {
+                Items = items,
+                TotalRecords = total
+            };
         }
 
         private IQueryable<Purchase> GetQueryableByFilter(

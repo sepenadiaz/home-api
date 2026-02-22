@@ -29,10 +29,10 @@ namespace Home.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<PurchaseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResult<PurchaseDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IEnumerable<PurchaseDTO>> Get(
+        public async Task<PagedResult<PurchaseDTO>> Get(
             [FromQuery] PurchaseFilter filter,
             CancellationToken cancellationToken
         )

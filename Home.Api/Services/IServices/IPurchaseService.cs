@@ -6,7 +6,7 @@ namespace Home.Api.Services.IServices
     public interface IPurchaseService
     {
         Task<PurchaseDTO> Add(PurchasePostDTO purchase, CancellationToken cancellationToken);
-        Task<IEnumerable<PurchaseDTO>> Get(PurchaseFilter filter, CancellationToken cancellationToken);
+        Task<PagedResult<PurchaseDTO>> Get(PurchaseFilter filter, CancellationToken cancellationToken);
     }
 }
 

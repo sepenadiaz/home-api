@@ -1,6 +1,6 @@
 namespace Home.Api.Filters
 {
-    public class PurchaseFilter
+    public class PurchaseFilter : PaginationFilter
     {
         public int? CreditCardId { get; set; }
         public DateTime? DateFrom { get; set; }

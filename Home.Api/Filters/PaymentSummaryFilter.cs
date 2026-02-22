@@ -1,6 +1,6 @@
 namespace Home.Api.Filters
 {
-    public class PaymentSummaryFilter
+    public class PaymentSummaryFilter : PaginationFilter
     {
         public int? Year { get; set; }
         public int? Month { get; set; }

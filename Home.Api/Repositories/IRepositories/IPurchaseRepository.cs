@@ -6,7 +6,7 @@ namespace Home.Api.Repositories.IRepositories
     public interface IPurchaseRepository
     {
         Task<PurchaseDTO> Add(PurchasePostDTO purchase, CancellationToken cancellationToken);
-        Task<IEnumerable<PurchaseDTO>> GetByFilter(PurchaseFilter filter, CancellationToken cancellationToken);
+        Task<PagedResult<PurchaseDTO>> GetByFilter(PurchaseFilter filter, CancellationToken cancellationToken);
     }
 }
 

@@ -21,12 +21,12 @@ namespace Home.Api.Services
             return await repository.Add(payments, cancellationToken);
         }
 
-        public async Task<IEnumerable<PaymentDetailDTO>> GetDetails(PaymentDetailFilter filter, CancellationToken cancellationToken)
+        public async Task<PagedResult<PaymentDetailDTO>> GetDetails(PaymentDetailFilter filter, CancellationToken cancellationToken)
         {
             return await repository.GetDetails(filter, cancellationToken);
         }
 
-        public async Task<IEnumerable<PaymentSummaryDTO>> GetSummary(PaymentSummaryFilter filter, CancellationToken cancellationToken)
+        public async Task<PagedResult<PaymentSummaryDTO>> GetSummary(PaymentSummaryFilter filter, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
