@@ -14,6 +14,9 @@ namespace Home.Api.Validators
             RuleFor(x => x.CardBrand)
                 .NotEmpty().WithMessage("CardBrand is required.")
                 .MaximumLength(50).WithMessage("CardBrand must be at most 50 characters.");
+
+            RuleFor(x => x.Color)
+                .MaximumLength(50).WithMessage("Color must be at most 50 characters.");
         }
     }
 }

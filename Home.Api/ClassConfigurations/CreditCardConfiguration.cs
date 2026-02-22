@@ -16,6 +16,7 @@ namespace Home.Api
             builder.Property(ent => ent.Bank).HasMaxLength(50);
             builder.Property(ent => ent.CardBrand).HasMaxLength(50);
             builder.Property(ent => ent.LogoPath).HasMaxLength(500);
+            builder.Property(ent => ent.Color).HasMaxLength(50);
         }
     }
 }

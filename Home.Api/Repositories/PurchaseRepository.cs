@@ -36,8 +36,43 @@ namespace Home.Api.Repositories
         {
             var query = context.Purchases
                         .Include(p => p.CreditCard)
-                        .OrderByDescending(p => p.Date)
                         .AsQueryable();
+
+            // Apply dynamic sorting if requested
+            if (!string.IsNullOrWhiteSpace(filter.SortField))
+            {
+                var desc = filter.SortDescending ?? false;
+                switch (filter.SortField.Trim())
+                {
+                    case "Date":
+                    case "date":
+                        query = desc ? query.OrderByDescending(p => p.Date) : query.OrderBy(p => p.Date);
+                        break;
+                    case "Amount":
+                    case "amount":
+                        query = desc ? query.OrderByDescending(p => p.Amount) : query.OrderBy(p => p.Amount);
+                        break;
+                    case "Description":
+                    case "description":
+                        query = desc ? query.OrderByDescending(p => p.Description) : query.OrderBy(p => p.Description);
+                        break;
+                    case "CreditCardName":
+                    case "creditCardName":
+                        // Order by bank then brand to approximate a card name
+                        query = desc ? query.OrderByDescending(p => p.CreditCard.Bank).ThenByDescending(p => p.CreditCard.CardBrand)
+                                     : query.OrderBy(p => p.CreditCard.Bank).ThenBy(p => p.CreditCard.CardBrand);
+                        break;
+                    default:
+                        // Fallback to Date descending if unknown field
+                        query = query.OrderByDescending(p => p.Date);
+                        break;
+                }
+            }
+            else
+            {
+                // Default ordering
+                query = query.OrderByDescending(p => p.Date);
+            }
 
             if (filter.CreditCardId.HasValue)
             {
